@@ -1,4 +1,5 @@
 import argparse
+import getpass
 import json
 import os
 import sys
@@ -77,7 +78,7 @@ def print_table(workitems: List[dict]) -> None:
 def cmd_setup(args: argparse.Namespace) -> None:
     base_url = args.base_url or DEFAULT_BASE_URL
     username = args.username or input("Username: ").strip()
-    password = args.password or input("Password: ").strip()
+    password = args.password or getpass.getpass("Password: ")
 
     cfg = TicketForgeConfig(base_url=base_url, username=username, password=password)
     client = TicketForgeClient(cfg)
@@ -102,7 +103,7 @@ def cmd_list(args: argparse.Namespace) -> None:
     has_more = pagination.get("hasMore")
     if has_more:
         print("")
-        print("More results available. Try: python main.py list --all")
+        print("More results available. Try: python src/main.py list --all")
 
 
 def cmd_create(args: argparse.Namespace) -> None:
