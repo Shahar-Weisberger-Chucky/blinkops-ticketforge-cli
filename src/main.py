@@ -106,6 +106,34 @@ def cmd_list(args: argparse.Namespace) -> None:
         print("More results available. Try: python src/main.py list --all")
 
 
+def cmd_show(args: argparse.Namespace) -> None:
+    cfg = load_config()
+    client = TicketForgeClient(cfg)
+
+    ref = args.ref
+    w = client.get_workitem_deep(ref)
+
+    print(f"REF: {w.get('ref', '')}")
+    print(f"TITLE: {w.get('title', '')}")
+    print(f"STAGE: {w.get('stage', '')}")
+    print(f"UPDATED: {w.get('updated', '')}")
+    print(f"CREATED: {w.get('created', '')}")
+
+    depends = w.get("dependsOn") or []
+    if depends:
+        print(f"DEPENDS_ON: {', '.join(depends)}")
+
+    owner = w.get("owner") or {}
+    if owner.get("username"):
+        print(f"OWNER: {owner.get('username')}")
+
+    desc = w.get("description")
+    if desc is not None:
+        print("")
+        print("DESCRIPTION:")
+        print(desc)
+
+
 def cmd_create(args: argparse.Namespace) -> None:
     cfg = load_config()
     client = TicketForgeClient(cfg)
@@ -151,6 +179,10 @@ def build_parser() -> argparse.ArgumentParser:
     l.add_argument("--limit", type=int, default=5)
     l.add_argument("--all", action="store_true")
     l.set_defaults(func=cmd_list)
+
+    sh = sub.add_parser("show", help="Show a ticket in detail")
+    sh.add_argument("ref", help="Ticket ref, e.g. TF-160")
+    sh.set_defaults(func=cmd_show)
 
     c = sub.add_parser("create", help="Create a new ticket")
     c.add_argument("--title")

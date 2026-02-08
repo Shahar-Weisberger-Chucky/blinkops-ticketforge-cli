@@ -66,6 +66,12 @@ python src/main.py list --limit 5
 python src/main.py list --all --limit 2
 ```
 
+### Show a ticket (detail)
+
+```bash
+python src/main.py show TF-160
+```
+
 ### Create a ticket
 
 ```bash
